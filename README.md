@@ -3,10 +3,10 @@
 ## PM Accelerator Tech Assessment
 
 > **PM Accelerator Mission:** PM Accelerator is committed to breaking down financial barriers and
-promoting educational fairness. Through its educational initiatives,
-including PMA Kids, it aims to empower underserved students, improve
-career opportunities, and foster greater diversity in the technology
-industry.
+> promoting educational fairness. Through its educational initiatives,
+> including PMA Kids, it aims to empower underserved students, improve
+> career opportunities, and foster greater diversity in the technology
+> industry.
 
 This project analyses the **Global Weather Repository** dataset and builds a leakage-safe forecasting workflow for short-term global temperature trends. It demonstrates data cleaning, exploratory data analysis, anomaly detection, environmental and spatial analysis, feature engineering, statistical forecasting, machine-learning forecasting, ensemble modelling, and model evaluation.
 
@@ -60,12 +60,11 @@ weather-trend-forecasting/
 ├── GlobalWeatherRepository.csv      # Download separately from Kaggle
 ├── weather_cleaned.csv              # Created by the preprocessing notebook
 │
-├── Weather_Trend_Forecasting_Report.docx 
+├── Weather_Trend_Forecasting_Report.docx
 │
 ├── README.md
 └── requirements.txt
 ```
-
 
 The code currently expects `GlobalWeatherRepository.csv` and the generated `weather_cleaned.csv` to be accessible from the project folder.
 
@@ -83,7 +82,6 @@ The code currently expects `GlobalWeatherRepository.csv` and the generated `weat
 3. Extract the CSV file.
 4. Rename it to `GlobalWeatherRepository.csv` if necessary.
 5. Place it in the root of the project folder, alongside the notebooks.
-
 
 ---
 
@@ -105,15 +103,15 @@ The preprocessing notebook performs the following steps:
 
 ### Cleaning Summary
 
-| Measure | Result |
-|---|---:|
-| Original observations | 153,971 |
-| Original features | 41 |
-| Final observations | 153,586 |
-| Final features | 38 |
-| Final country-location pairs | 219 |
-| Rows removed through location filtering | 385 |
-| Invalid individual measurements replaced | 10 |
+| Measure                                  |  Result |
+| ---------------------------------------- | ------: |
+| Original observations                    | 153,971 |
+| Original features                        |      41 |
+| Final observations                       | 153,586 |
+| Final features                           |      38 |
+| Final country-location pairs             |     219 |
+| Rows removed through location filtering  |     385 |
+| Invalid individual measurements replaced |      10 |
 
 This selective cleaning approach preserves genuine extreme weather observations while removing values that are physically impossible or clearly encoded as placeholders.
 
@@ -158,7 +156,6 @@ Two complementary methods are used:
 
 The Isolation Forest uses standardized inputs and a 2% contamination setting, flagging **3,072 observations** for review. These rows are not automatically deleted because rare observations may represent genuine storms, heat events, or other extreme conditions.
 
-
 ### 5. Forecast Target Construction
 
 The forecasting target is a **country-balanced global daily mean temperature series**.
@@ -179,11 +176,11 @@ The final forecasting series contains **794 daily observations** from 16 May 202
 
 The data is split chronologically:
 
-| Split | Dates | Observations | Purpose |
-|---|---|---:|---|
-| Training | 16 May 2024–20 March 2026 | 674 | Model fitting |
-| Validation | 21 March 2026–19 May 2026 | 60 | Model and ensemble selection |
-| Test | 20 May 2026–18 July 2026 | 60 | Final evaluation |
+| Split      | Dates                     | Observations | Purpose                      |
+| ---------- | ------------------------- | -----------: | ---------------------------- |
+| Training   | 16 May 2024–20 March 2026 |          674 | Model fitting                |
+| Validation | 21 March 2026–19 May 2026 |           60 | Model and ensemble selection |
+| Test       | 20 May 2026–18 July 2026  |           60 | Final evaluation             |
 
 All test predictions use a rolling one-day-ahead process. Each prediction is generated using only information available before the forecast date. Current-day weather variables are excluded because they would not be known at prediction time.
 
@@ -225,15 +222,15 @@ The weights are selected on the validation period, not the test period.
 
 ### Forecast Performance
 
-| Model | MAE (°C) | RMSE (°C) | MAPE (%) | sMAPE (%) |
-|---|---:|---:|---:|---:|
+| Model                      |   MAE (°C) |  RMSE (°C) |   MAPE (%) |  sMAPE (%) |
+| -------------------------- | ---------: | ---------: | ---------: | ---------: |
 | **Ridge + Naive Ensemble** | **0.2206** | **0.2918** | **0.9665** | **0.9639** |
-| SARIMA | 0.2233 | 0.2991 | 0.9760 | 0.9765 |
-| Holt Damped | 0.2262 | 0.2990 | 0.9895 | 0.9887 |
-| Ridge Regression | 0.2276 | 0.2952 | 0.9980 | 0.9948 |
-| Rolling Naive | 0.2293 | 0.3008 | 1.0027 | 1.0027 |
-| Random Forest | 0.2774 | 0.3552 | 1.2166 | 1.2182 |
-| Seasonal Naive | 0.6190 | 0.7612 | 2.7028 | 2.7333 |
+| SARIMA                     |     0.2233 |     0.2991 |     0.9760 |     0.9765 |
+| Holt Damped                |     0.2262 |     0.2990 |     0.9895 |     0.9887 |
+| Ridge Regression           |     0.2276 |     0.2952 |     0.9980 |     0.9948 |
+| Rolling Naive              |     0.2293 |     0.3008 |     1.0027 |     1.0027 |
+| Random Forest              |     0.2774 |     0.3552 |     1.2166 |     1.2182 |
+| Seasonal Naive             |     0.6190 |     0.7612 |     2.7028 |     2.7333 |
 
 The Ridge-naive ensemble achieved the best result across all four reported test metrics. Its MAE was approximately **3.8% lower** than the rolling-naive baseline.
 
@@ -255,26 +252,26 @@ The first predicted value is approximately **23.68°C**, followed by a gradual d
 
 ## Assessment Requirement Coverage
 
-| Assessment requirement | Project implementation |
-|---|---|
-| Handle missing values | Analysis-specific missing-value treatment and time interpolation |
-| Handle outliers | Physical validity checks, IQR analysis, and Isolation Forest |
-| Normalize data | StandardScaler in Ridge and anomaly-detection pipelines |
-| Basic EDA | Statistics, distributions, correlations, and temporal patterns |
-| Temperature visualisation | Distribution, monthly trend, geographic, and forecast charts |
-| Precipitation visualisation | Distribution and seasonal/weather-condition analyses |
-| Use `last_updated` | Main datetime index for analysis and forecasting |
-| Basic forecasting model | Naive and Holt baselines |
-| Multiple forecasting models | Naive, Holt, SARIMA, Ridge, Random Forest, and ensemble |
-| Ensemble model | Validation-weighted Ridge and rolling-naive ensemble |
-| Anomaly detection | IQR and Isolation Forest |
-| Climate analysis | Short-term seasonal and regional variation, with limitations stated |
-| Environmental impact | Air-quality distributions and weather-pollution relationships |
-| Feature importance | Ridge coefficients and Random Forest feature importance |
-| Spatial analysis | Latitude analysis, rankings, and maps |
-| Geographic patterns | Country and sampled-location comparisons |
-| Model evaluation | MAE, RMSE, MAPE, and sMAPE |
-| PM Accelerator mission | Included in notebook and report documentation |
+| Assessment requirement      | Project implementation                                              |
+| --------------------------- | ------------------------------------------------------------------- |
+| Handle missing values       | Analysis-specific missing-value treatment and time interpolation    |
+| Handle outliers             | Physical validity checks, IQR analysis, and Isolation Forest        |
+| Normalize data              | StandardScaler in Ridge and anomaly-detection pipelines             |
+| Basic EDA                   | Statistics, distributions, correlations, and temporal patterns      |
+| Temperature visualisation   | Distribution, monthly trend, geographic, and forecast charts        |
+| Precipitation visualisation | Distribution and seasonal/weather-condition analyses                |
+| Use `last_updated`          | Main datetime index for analysis and forecasting                    |
+| Basic forecasting model     | Naive and Holt baselines                                            |
+| Multiple forecasting models | Naive, Holt, SARIMA, Ridge, Random Forest, and ensemble             |
+| Ensemble model              | Validation-weighted Ridge and rolling-naive ensemble                |
+| Anomaly detection           | IQR and Isolation Forest                                            |
+| Climate analysis            | Short-term seasonal and regional variation, with limitations stated |
+| Environmental impact        | Air-quality distributions and weather-pollution relationships       |
+| Feature importance          | Ridge coefficients and Random Forest feature importance             |
+| Spatial analysis            | Latitude analysis, rankings, and maps                               |
+| Geographic patterns         | Country and sampled-location comparisons                            |
+| Model evaluation            | MAE, RMSE, MAPE, and sMAPE                                          |
+| PM Accelerator mission      | Included in notebook and report documentation                       |
 
 ---
 
@@ -393,16 +390,14 @@ After adding a new library to the project, add the package to `requirements.txt`
 ---
 
 ## Demo
-- **Demo video:** `<ADD-YOUR-VIEWABLE-DEMO-VIDEO-LINK>`
 
+- **Demo video:** (https://drive.google.com/file/d/1kWKAECqZJMHtslw282Hx-wFhXZQBgfTH/view?usp=sharing)
 
 ---
 
 ## Author
 
 **Name:** `Aeiman Imtiaz`
-**Assessment:** Product Manager Accelerator — Weather Trend Forecasting  
-
+**Assessment:** Product Manager Accelerator — Weather Trend Forecasting
 
 ---
-
